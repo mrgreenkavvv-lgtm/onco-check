@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16324F">
 <title>Онко-скрининг: подозрения по симптомам</title>
 <style>
   :root{
@@ -13,155 +14,211 @@
     --amber:#B26A00; --amber-bg:#FFF6E5;
     --radius:14px; --shadow:0 2px 10px rgba(22,50,79,.07);
   }
-  *{box-sizing:border-box}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     background:var(--bg); color:var(--text); line-height:1.45; font-size:15px;
+    -webkit-text-size-adjust:100%;
   }
   header{
     background:linear-gradient(135deg,#16324F 0%,#1F4E79 60%,#2D6CB5 100%);
-    color:#fff; padding:28px 20px 24px;
+    color:#fff; padding:22px 16px 18px;
   }
-  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-  header .wrap{padding:0}
-  h1{margin:0 0 6px;font-size:26px;line-height:1.2;letter-spacing:-.2px}
-  .sub{opacity:.9;font-size:14px;max-width:820px}
-  .badge{display:inline-block;margin-top:12px;background:rgba(255,255,255,.14);
-    border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:999px;font-size:12.5px}
-  main{padding:22px 0 40px}
-  .layout{display:grid;grid-template-columns:minmax(320px,1fr) minmax(320px,1fr);gap:20px;align-items:start}
-  @media (max-width:900px){.layout{grid-template-columns:1fr}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
-  .card h2{margin:0 0 4px;font-size:17px;color:var(--navy)}
+  .wrap{max-width:1180px;margin:0 auto}
+  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  h1{margin:0 0 6px;font-size:24px;line-height:1.2;letter-spacing:-.2px}
+  .sub{opacity:.92;font-size:13.5px;max-width:820px}
+  .badge{display:inline-block;margin-top:10px;background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:999px;font-size:12px}
+  .btn-h{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;
+    padding:9px 12px;border-radius:10px;font-size:13px;white-space:nowrap;cursor:pointer}
+  .btn-h:active{background:rgba(255,255,255,.28)}
+  main{padding:16px 0 30px}
+  .wrap.pad{padding:0 14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+  .card h2{margin:0 0 4px;font-size:16.5px;color:var(--navy)}
   .card .hint{color:var(--muted);font-size:12.5px;margin-bottom:12px}
-  .row{display:flex;gap:10px;flex-wrap:wrap}
-  .field{flex:1 1 120px;min-width:110px}
-  label.f{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
-  input[type=number],select{
-    width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;
-    font-size:14px;background:#fff;color:var(--text)
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .field{flex:1 1 110px;min-width:96px}
+  label.f{display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px}
+  input[type=number],input[type=text],select{
+    width:100%;padding:10px 10px;border:1px solid var(--line);border-radius:10px;
+    font-size:15px;background:#fff;color:var(--text);min-height:42px
   }
-  input[type=number]:focus,select:focus{outline:2px solid #BBD3EE;border-color:#9DBEE4}
-  .group{margin:14px 0 4px;font-size:12px;font-weight:600;color:var(--blue);
+  input:focus,select:focus{outline:2px solid #BBD3EE;border-color:#9DBEE4}
+  .group{margin:14px 0 6px;font-size:11.5px;font-weight:700;color:var(--blue);
     text-transform:uppercase;letter-spacing:.04em}
   .chips{display:flex;flex-wrap:wrap;gap:7px}
   .chip{
     display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);
-    background:#FBFCFE;color:var(--text);padding:7px 11px;border-radius:999px;
-    font-size:13px;cursor:pointer;user-select:none;transition:.12s
+    background:#FBFCFE;color:var(--text);padding:9px 12px;border-radius:999px;
+    font-size:13.5px;cursor:pointer;user-select:none;transition:.12s;min-height:40px;
+    line-height:1.2;text-align:left
   }
-  .chip:hover{border-color:#9DBEE4;background:#F1F6FC}
+  .chip:active{transform:scale(.98)}
   .chip[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
-  .chip .rf{width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block}
+  .chip.test[aria-pressed=true]{background:var(--green);border-color:var(--green)}
+  .chip .rf{width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;flex:none}
   .chip[aria-pressed=true] .rf{background:#FFB4AB}
-  .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
-  button{font:inherit;cursor:pointer;border-radius:10px;padding:10px 16px;border:1px solid transparent}
+  .actions{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap}
+  button{font:inherit;cursor:pointer;border-radius:10px;padding:11px 15px;border:1px solid transparent;min-height:44px}
   .btn-primary{background:var(--navy);color:#fff}
-  .btn-primary:hover{background:#1F4E79}
-  .btn-ghost{background:#fff;border-color:var(--line);color:var(--text)}
-  .btn-ghost:hover{background:#F1F6FC}
-  .alert{border-radius:12px;padding:12px 14px;font-size:13.5px;margin-bottom:14px;border:1px solid}
+  .btn-primary:active{background:#1F4E79}
+  .btn{background:#fff;border-color:var(--line);color:var(--text)}
+  .btn-ghost{background:transparent;border-color:var(--line);color:var(--muted)}
+  .alert{border-radius:12px;padding:11px 13px;font-size:13.5px;margin-bottom:12px;border:1px solid}
   .alert.red{background:var(--red-bg);border-color:#E7B6B0;color:#7A211B}
   .alert.amber{background:var(--amber-bg);border-color:#EBD3A6;color:#6B4700}
   .alert.green{background:var(--green-bg);border-color:#B7D9B7;color:#1E5B20}
-  .empty{color:var(--muted);font-size:14px;padding:22px 4px;text-align:center}
-  .dis{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:#FCFDFF}
+  .empty{color:var(--muted);font-size:13.5px;padding:18px 4px;text-align:center}
+  .dis{border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:11px;background:#FCFDFF}
   .dis-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-  .dis h3{margin:0;font-size:15.5px;color:var(--navy)}
+  .dis h3{margin:0;font-size:15px;color:var(--navy)}
   .score{font-weight:700;font-size:14px;color:var(--blue);white-space:nowrap}
   .bar{height:7px;background:#E7EEF7;border-radius:99px;overflow:hidden;margin:8px 0 10px}
   .bar span{display:block;height:100%;background:linear-gradient(90deg,#2D6CB5,#4E93D9);border-radius:99px}
-  .dis ul{margin:6px 0 0;padding-left:18px}
-  .dis li{margin:3px 0;font-size:13.4px}
-  .tag{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:999px;background:#EEF3FA;color:#2B4A6E;margin-right:4px}
+  .tests{list-style:none;margin:0;padding:0;font-size:13.4px}
+  .tests li{display:flex;gap:7px;align-items:flex-start;padding:3px 0}
+  .tests li .m{width:16px;flex:none;text-align:center;font-weight:700}
+  .tests li.done{color:#2E6B31}
+  .tests li.done .m{color:var(--green)}
+  .tests li.todo .m{color:#9DB4CC}
+  .tag{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:999px;background:#EEF3FA;color:#2B4A6E;margin:4px 4px 0 0}
   .tag.ref{background:#EAF2FB;color:#2B4A6E;border:1px solid #CFE0F2}
-  .plan{margin-top:6px}
-  .plan ol{margin:8px 0 0;padding-left:20px}
+  .progress{font-size:12px;color:var(--muted);margin:2px 0 6px}
+  .stages{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--muted)}
+  .st-chip{padding:5px 11px;min-height:32px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:12.5px;color:var(--text)}
+  .st-chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .st-chip.clear{color:var(--muted);border-style:dashed}
+  .tx{margin-top:8px;background:#F3F7FD;border:1px solid #D9E6F5;border-radius:10px;padding:9px 11px;font-size:13px}
+  .plan ol{margin:6px 0 0;padding-left:20px}
   .plan li{margin:5px 0;font-size:14px}
-  .muted{color:var(--muted);font-size:12.5px}
   .flow{display:grid;gap:6px;margin-top:10px}
   .flow .step{background:#F6F9FD;border:1px solid var(--line);border-left:4px solid var(--blue);
     border-radius:10px;padding:9px 12px;font-size:13.5px}
   .flow .arrow{color:#9DBEE4;text-align:center;font-size:14px;line-height:1}
-  footer{border-top:1px solid var(--line);background:#fff;padding:18px 0;font-size:12.5px;color:var(--muted)}
-  footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-  details summary{cursor:pointer;color:var(--blue);font-weight:600;font-size:14px;margin-top:4px}
+  footer{border-top:1px solid var(--line);background:#fff;padding:16px 0;font-size:12px;color:var(--muted)}
+  footer .wrap{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  /* модальное окно истории */
+  .modal{position:fixed;inset:0;background:rgba(15,25,40,.45);display:flex;align-items:flex-end;
+    justify-content:center;z-index:50;padding:0}
+  .modal[hidden]{display:none}
+  @media(min-width:640px){.modal{align-items:center;padding:20px}}
+  .modal-card{background:#fff;width:100%;max-width:560px;border-radius:18px 18px 0 0;max-height:86vh;
+    display:flex;flex-direction:column;overflow:hidden}
+  @media(min-width:640px){.modal-card{border-radius:18px}}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--line)}
+  .modal-head h3{margin:0;font-size:16px;color:var(--navy)}
+  .modal-body{overflow:auto;padding:12px 16px}
+  .modal-foot{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap}
+  .plist{display:grid;gap:8px}
+  .pitem{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;gap:10px;justify-content:space-between;align-items:center}
+  .pitem .meta{font-size:12px;color:var(--muted)}
+  .pitem b{font-size:14px}
+  .pitem .ops{display:flex;gap:6px;flex:none}
+  .icon-btn{width:38px;height:38px;padding:0;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:15px}
+  .icon-btn.danger{color:var(--red);border-color:#E7B6B0}
+  .stickybar{display:none}
+  @media (max-width:760px){
+    body{padding-bottom:78px}
+    header{padding:18px 14px 14px}
+    h1{font-size:20px}
+    .sub{font-size:12.8px}
+    .badge{font-size:11.5px}
+    .card{padding:14px;border-radius:12px}
+    .layout{display:block}
+    .chip{font-size:13px;padding:9px 11px}
+    .stickybar{display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(22,50,79,.08);z-index:40}
+    .stickybar button{flex:1}
+  }
+  @media (min-width:761px){
+    .actions{display:flex}
+    .layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  }
   @media print{
     header{background:#fff;color:#000;padding:0 0 8px}
-    .layout{grid-template-columns:1fr}
+    .layout{display:block}
     .card{box-shadow:none;border-color:#ccc}
-    .actions,.chips{display:none}
+    .actions,.chips,.stickybar,.btn-h{display:none}
   }
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>Онко-скрининг: подозрения по симптомам</h1>
-    <div class="sub">Учебный инструмент по конспекту для зачёта: отмечаете симптомы — получаете вероятные онкологические
-      подозрения, красные флаги и план обследования первой линии. Не заменяет врача и не является диагнозом.</div>
-    <div class="badge">Основано на клинических рекомендациях МЗ РФ / RUSSCO · только образовательные цели</div>
+    <div class="topbar">
+      <div>
+        <h1>Онко-скрининг: подозрения по симптомам</h1>
+        <div class="sub">Отмечаете симптомы и уже выполненные обследования — получаете вероятные подозрения,
+          красные флаги, план дообследования. Не заменяет врача и не является диагнозом.</div>
+      </div>
+      <button class="btn-h" id="openHistory">История <span id="histCount"></span></button>
+    </div>
+    <div class="badge">Клинические рекомендации МЗ РФ / RUSSCO · образовательные цели</div>
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap pad">
+  <section class="card">
+    <h2>Пациент</h2>
+    <div class="hint">Данные сохраняются только на этом устройстве (localStorage).</div>
+    <div class="row">
+      <div class="field" style="flex:2 1 160px">
+        <label class="f" for="pname">Имя / ID пациента</label>
+        <input id="pname" type="text" placeholder="например, Иванов И.И." autocomplete="off">
+      </div>
+      <div class="field"><label class="f" for="age">Возраст</label>
+        <input id="age" type="number" min="0" max="110" inputmode="numeric" placeholder="62"></div>
+      <div class="field"><label class="f" for="sex">Пол</label>
+        <select id="sex"><option value="">—</option><option value="m">муж</option><option value="f">жен</option></select></div>
+      <div class="field"><label class="f" for="smoke">Курение, пачка-лет</label>
+        <input id="smoke" type="number" min="0" max="150" inputmode="numeric" placeholder="0"></div>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" id="calc">Подобрать обследование</button>
+      <button class="btn" id="save">Сохранить</button>
+      <button class="btn-ghost" id="newPatient">Новый</button>
+    </div>
+  </section>
+
   <div class="layout">
-    <!-- ЛЕВАЯ КОЛОНКА: ВВОД -->
-    <section class="card" aria-label="Ввод данных">
-      <h2>1. Данные пациента и симптомы</h2>
-      <div class="hint">Отметьте всё, что есть. Красная точка — «красный флаг».</div>
-
-      <div class="row">
-        <div class="field">
-          <label class="f" for="age">Возраст</label>
-          <input id="age" type="number" min="0" max="110" placeholder="например, 62">
-        </div>
-        <div class="field">
-          <label class="f" for="sex">Пол</label>
-          <select id="sex">
-            <option value="">не указан</option>
-            <option value="m">мужской</option>
-            <option value="f">женский</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="f" for="smoke">Курение, пачка-лет</label>
-          <input id="smoke" type="number" min="0" max="150" placeholder="0">
-        </div>
-      </div>
-
+    <section class="card">
+      <h2>1. Симптомы</h2>
+      <div class="hint">Красная точка — «красный флаг». Нажмите, чтобы отметить.</div>
       <div id="symptomGroups"></div>
-
-      <div class="actions">
-        <button class="btn-primary" id="calc">Подобрать обследование</button>
-        <button class="btn-ghost" id="reset">Сбросить</button>
-      </div>
     </section>
 
-    <!-- ПРАВАЯ КОЛОНКА: РЕЗУЛЬТАТ -->
-    <section class="card" aria-live="polite" aria-label="Результат">
-      <h2>2. Подозрения и план обследования</h2>
-      <div class="hint">Результат отсортирован по соответствию симптомам. Учитываются возраст и курение.</div>
-      <div id="result"><div class="empty">Отметьте симптомы слева и нажмите «Подобрать обследование».</div></div>
+    <section class="card">
+      <h2>2. Диагностические методы</h2>
+      <div class="hint">Отметьте то, что уже выполнено — в результате увидите, что осталось.</div>
+      <div id="testGroups"></div>
     </section>
   </div>
 
-  <section class="card" style="margin-top:20px">
+  <section class="card" aria-live="polite">
+    <h2>3. Подозрения и план</h2>
+    <div class="hint">Отсортировано по соответствию симптомам; учитываются возраст, пол и курение.</div>
+    <div id="result"><div class="empty">Отметьте симптомы и нажмите «Подобрать обследование».</div></div>
+  </section>
+
+  <section class="card">
     <h2>Схема: осмотр → диагностика → лечение</h2>
-    <div class="hint">Короткий алгоритм, по которому строится вся логика приложения.</div>
+    <div class="hint">Логика, по которой строится приложение.</div>
     <div class="flow">
       <div class="step"><b>1. Жалобы и анамнез</b> — длительность, динамика; онконастороженность при симптоме &gt; 3 недель</div>
       <div class="arrow">↓</div>
       <div class="step"><b>2. Физикальный осмотр</b> — кожа и невусы, лимфоузлы, молочные железы, живот, пальцевое ректальное исследование</div>
       <div class="arrow">↓</div>
-      <div class="step"><b>3. Лаборатория</b> — ОАК, биохимия, коагулограмма; онкомаркеры — только для динамики</div>
+      <div class="step"><b>3. Лаборатория</b> — ОАК, биохимия; онкомаркеры — только для динамики</div>
       <div class="arrow">↓</div>
-      <div class="step"><b>4. Визуализация</b> — УЗИ, КТ/МРТ с контрастом, ПЭТ/КТ, эндоскопия, маммография</div>
+      <div class="step"><b>4. Визуализация и эндоскопия</b> — УЗИ, КТ/МРТ, ПЭТ/КТ, ЭГДС, колоноскопия, цистоскопия</div>
       <div class="arrow">↓</div>
       <div class="step"><b>5. Морфологическая верификация</b> — гистология, ИГХ, молекулярные маркеры; без неё лечение не начинают</div>
       <div class="arrow">↓</div>
-      <div class="step"><b>6. Стадирование TNM</b> → консилиум → лечение по стадии (см. подробный конспект)</div>
+      <div class="step"><b>6. Стадирование TNM</b> → консилиум → лечение по стадии</div>
     </div>
   </section>
 </main>
@@ -173,8 +230,27 @@
   </div>
 </footer>
 
+<div class="stickybar" id="stickyBar">
+  <button class="btn-primary" id="calc2">Рассчитать</button>
+  <button class="btn" id="save2">Сохранить</button>
+</div>
+
+<div class="modal" id="historyModal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>История пациентов</h3>
+      <button class="icon-btn" id="closeHistory" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="modal-body" id="histBody"></div>
+    <div class="modal-foot">
+      <button class="btn" id="exportBtn">Скачать JSON</button>
+      <button class="btn-ghost" id="clearAll">Очистить всё</button>
+    </div>
+  </div>
+</div>
+
 <script>
-/* ------------------------------ данные ------------------------------ */
+/* ============================ ДАННЫЕ ============================ */
 const GROUPS = [
   ["Общие", [
     ["fatigue", "Слабость, утомляемость", 1, false],
@@ -234,148 +310,208 @@ const GROUPS = [
   ]]
 ];
 
+const TESTS = [
+  ["lab", "cbc", "ОАК"],
+  ["lab", "biochem", "Биохимия, кальций, креатинин"],
+  ["lab", "markers", "Онкомаркеры (РЭА, CA 19-9, ПСА)"],
+  ["img", "us", "УЗИ"],
+  ["img", "xray", "Рентгенография"],
+  ["img", "ct", "КТ с контрастом"],
+  ["img", "mri", "МРТ"],
+  ["img", "pet", "ПЭТ/КТ"],
+  ["img", "mammo", "Маммография"],
+  ["endo", "egds", "ЭГДС с биопсией"],
+  ["endo", "colono", "Колоноскопия с биопсией"],
+  ["endo", "broncho", "Бронхоскопия / EBUS"],
+  ["endo", "cysto", "Цистоскопия / ТУР"],
+  ["endo", "eus", "ЭУС"],
+  ["morph", "cyto", "Цитология"],
+  ["morph", "biopsy", "Биопсия / трепанобиопсия"],
+  ["morph", "histo", "Гистология"],
+  ["morph", "ihc", "ИГХ"],
+  ["morph", "mol", "Молекулярное тестирование"],
+  ["misc", "laparo", "Лапароскопия"],
+  ["misc", "scint", "Остеосцинтиграфия"]
+];
+const TEST_GROUP_NAMES = {lab: "Лаборатория", img: "Визуализация", endo: "Эндоскопия", morph: "Морфология", misc: "Прочее"};
+const TEST_NAME = Object.fromEntries(TESTS.map(([, id, n]) => [id, n]));
+
 const DISEASES = [
-  {
-    id: "lung", name: "Рак лёгкого", group: "Грудная клетка",
-    s: {cough: 3, hemoptysis: 3, dyspnea: 2, chest: 2, hoarse: 2, weight: 2, fatigue: 1, fever: 1},
-    tests: ["КТ грудной клетки с контрастом", "Бронхоскопия / EBUS-ТББ с биопсией",
-            "ПЭТ/КТ, КТ головного мозга и надпочечников", "ИГХ (p40, TTF-1), EGFR/ALK/PD-L1"],
-    referral: "онколог / торакальный хирург",
-    note: "Скрининг: низкодозная КТ 55–74 года при ≥30 пачка-лет."
-  },
-  {
-    id: "esophagus", name: "Рак пищевода", group: "ЖКТ",
-    s: {dysphagia: 3, odyno: 3, weight: 3, nausea: 1, hoarse: 2, chest: 1},
-    tests: ["ЭГДС с биопсией (NBI, хромоскопия)", "ЭУС пищевода", "КТ грудной клетки и живота, ПЭТ/КТ"],
-    referral: "онколог / торакальный хирург",
-    note: "Факторы: алкоголь + курение, пищевод Барретта, ахалазия."
-  },
-  {
-    id: "gastric", name: "Рак желудка", group: "ЖКТ",
-    s: {dyspepsia: 3, early_satiety: 3, weight: 3, nausea: 2, anemia: 2, obstruction: 1},
-    tests: ["ЭГДС с биопсией (6–8 биоптатов)", "КТ брюшной полости с контрастом", "ЭУС, лапароскопия по показаниям",
-            "HER2, MSI/dMMR, PD-L1"],
-    referral: "онколог / абдоминальный хирург",
-    note: "Фактор риска — H. pylori; ЭГДС в 45 лет в рамках диспансеризации."
-  },
-  {
-    id: "crc", name: "Колоректальный рак", group: "ЖКТ",
-    s: {blood_stool: 3, stool: 3, anemia: 3, weight: 2, obstruction: 2, fatigue: 1},
-    tests: ["Колоноскопия с биопсией", "КТ грудной клетки, живота и таза", "РЭА, RAS/BRAF, MSI"],
-    referral: "онколог / колопроктолог",
-    note: "Скрининг: кал на скрытую кровь 40–75, колоноскопия в 45 и 65 лет."
-  },
-  {
-    id: "pancreas", name: "Рак поджелудочной железы", group: "ЖКТ",
-    s: {back_pain: 3, jaundice: 3, weight: 3, new_diabetes: 2, nausea: 2, thrombosis: 2, fatigue: 1},
-    tests: ["КТ с контрастом по панкреатическому протоколу", "ЭУС с биопсией", "МРТ/МРХПГ, CA 19-9"],
-    referral: "онколог / абдоминальный хирург",
-    note: "Оценка резектабельности — до морфологии; биопсия обязательна перед ХТ."
-  },
-  {
-    id: "kidney", name: "Рак почки", group: "Мочевые",
-    s: {hematuria: 3, flank: 2, mass: 3, weight: 2, fever: 1, anemia: 1, thrombosis: 1},
-    tests: ["УЗИ почек", "КТ почек с контрастом (3 фазы)", "КТ грудной клетки, МРТ головного мозга по показаниям"],
-    referral: "онкоуролог",
-    note: "50–60 % — случайная находка при УЗИ/КТ."
-  },
-  {
-    id: "bladder", name: "Рак мочевого пузыря", group: "Мочевые",
-    s: {hematuria: 3, dysuria: 2, flank: 1},
-    tests: ["Цистоскопия с биопсией / ТУР", "КТ-урография", "Цитология мочи"],
-    referral: "онкоуролог",
-    note: "Курение — причина до 50 % случаев."
-  },
-  {
-    id: "skin", name: "Меланома и рак кожи", group: "Кожа",
-    s: {nevus: 3, bleed: 2, ulcer: 2},
-    tests: ["Дерматоскопия, фотофиксация", "Эксцизионная биопсия с отступом 1–2 мм",
-            "Гистология (Бреслоу), ИГХ S100/Melan-A, BRAF"],
-    referral: "онкодерматолог",
-    note: "Меланому не наблюдают: подозрительный невус — эксцизия."
-  },
-  {
-    id: "breast", name: "Рак молочной железы", group: "Молочная железа",
-    s: {lump: 3, retraction: 3, discharge: 2, peau: 3, adenopathy: 1},
-    tests: ["Маммография + УЗИ", "Трепанобиопсия с ИГХ (ER, PR, HER2, Ki-67)", "КТ/остеосцинтиграфия при III–IV стадии"],
-    referral: "онкомаммолог",
-    note: "Скрининг: маммография 40–75 лет 1 раз в 2 года."
-  },
-  {
-    id: "lymphoma", name: "Лимфома, лейкоз", group: "Кровь",
-    s: {adenopathy: 3, solid: 3, night_sweat: 3, fever: 2, itch: 2, weight: 2, spleen: 2, fatigue: 1, anemia: 1},
-    tests: ["Эксцизионная биопсия узла с ИГХ", "ПЭТ/КТ", "ОАК, ЛДГ, миелограмма, проточная цитометрия"],
-    referral: "гематолог / онколог",
-    note: "В-симптомы: лихорадка, потливость, потеря массы."
-  },
-  {
-    id: "bone", name: "Опухоли костей и мягких тканей", group: "Кости",
-    s: {bone_pain: 3, swelling: 3, fracture: 3, weight: 1},
-    tests: ["Рентгенография зоны боли", "МРТ с контрастом", "Трепанобиопсия в специализированном центре",
-            "КТ грудной клетки"],
-    referral: "онкоортопед / саркомный центр",
-    note: "Биопсия — только в референсном центре, иначе риск загрязнения."
-  },
-  {
-    id: "myeloma", name: "Множественная миелома", group: "Кровь",
-    s: {bone_pain: 3, anemia: 3, fatigue: 2, weight: 1},
-    tests: ["М-градиент, иммунофиксация, свободные лёгкие цепи", "Миелограмма", "МРТ/КТ скелета, кальций, креатинин"],
-    referral: "гематолог",
-    note: "CRAB: гиперкальциемия, почечная недостаточность, анемия, костные поражения."
-  }
+  {id: "lung", name: "Рак лёгкого", group: "Грудная клетка",
+   s: {cough: 3, hemoptysis: 3, dyspnea: 2, chest: 2, hoarse: 2, weight: 2, fatigue: 1, fever: 1},
+   tests: ["ct", "broncho", "pet", "ihc", "mol"],
+   referral: "онколог / торакальный хирург",
+   note: "Скрининг: низкодозная КТ 55–74 года при ≥30 пачка-лет."},
+  {id: "esophagus", name: "Рак пищевода", group: "ЖКТ",
+   s: {dysphagia: 3, odyno: 3, weight: 3, nausea: 1, hoarse: 2, chest: 1},
+   tests: ["egds", "eus", "ct", "pet"],
+   referral: "онколог / торакальный хирург",
+   note: "Факторы: алкоголь + курение, пищевод Барретта, ахалазия."},
+  {id: "gastric", name: "Рак желудка", group: "ЖКТ",
+   s: {dyspepsia: 3, early_satiety: 3, weight: 3, nausea: 2, anemia: 2, obstruction: 1},
+   tests: ["egds", "ct", "eus", "ihc", "mol"],
+   referral: "онколог / абдоминальный хирург",
+   note: "Фактор риска — H. pylori; ЭГДС в 45 лет в рамках диспансеризации."},
+  {id: "crc", name: "Колоректальный рак", group: "ЖКТ",
+   s: {blood_stool: 3, stool: 3, anemia: 3, weight: 2, obstruction: 2, fatigue: 1},
+   tests: ["colono", "ct", "markers", "mol"],
+   referral: "онколог / колопроктолог",
+   note: "Скрининг: кал на скрытую кровь 40–75, колоноскопия в 45 и 65 лет."},
+  {id: "pancreas", name: "Рак поджелудочной железы", group: "ЖКТ",
+   s: {back_pain: 3, jaundice: 3, weight: 3, new_diabetes: 2, nausea: 2, thrombosis: 2, fatigue: 1},
+   tests: ["ct", "eus", "mri", "markers", "biopsy"],
+   referral: "онколог / абдоминальный хирург",
+   note: "Биопсия обязательна перед ХТ при нерезектабельном процессе."},
+  {id: "kidney", name: "Рак почки", group: "Мочевые",
+   s: {hematuria: 3, flank: 2, mass: 3, weight: 2, fever: 1, anemia: 1, thrombosis: 1},
+   tests: ["us", "ct", "mri"],
+   referral: "онкоуролог",
+   note: "50–60 % — случайная находка при УЗИ/КТ."},
+  {id: "bladder", name: "Рак мочевого пузыря", group: "Мочевые",
+   s: {hematuria: 3, dysuria: 2, flank: 1},
+   tests: ["cysto", "ct", "cyto"],
+   referral: "онкоуролог",
+   note: "Курение — причина до 50 % случаев."},
+  {id: "skin", name: "Меланома и рак кожи", group: "Кожа",
+   s: {nevus: 3, bleed: 2, ulcer: 2},
+   tests: ["biopsy", "histo", "ihc", "mol"],
+   referral: "онкодерматолог",
+   note: "Меланому не наблюдают: подозрительный невус — эксцизия."},
+  {id: "breast", name: "Рак молочной железы", group: "Молочная железа",
+   s: {lump: 3, retraction: 3, discharge: 2, peau: 3, adenopathy: 1},
+   tests: ["mammo", "us", "biopsy", "ihc"],
+   referral: "онкомаммолог",
+   note: "Скрининг: маммография 40–75 лет 1 раз в 2 года."},
+  {id: "lymphoma", name: "Лимфома, лейкоз", group: "Кровь",
+   s: {adenopathy: 3, solid: 3, night_sweat: 3, fever: 2, itch: 2, weight: 2, spleen: 2, fatigue: 1, anemia: 1},
+   tests: ["biopsy", "histo", "ihc", "pet", "cbc"],
+   referral: "гематолог / онколог",
+   note: "В-симптомы: лихорадка, потливость, потеря массы."},
+  {id: "bone", name: "Опухоли костей и мягких тканей", group: "Кости",
+   s: {bone_pain: 3, swelling: 3, fracture: 3, weight: 1},
+   tests: ["xray", "mri", "biopsy", "ct"],
+   referral: "онкоортопед / саркомный центр",
+   note: "Биопсия — только в референсном центре."},
+  {id: "myeloma", name: "Множественная миелома", group: "Кровь",
+   s: {bone_pain: 3, anemia: 3, fatigue: 2, weight: 1},
+   tests: ["cbc", "biochem", "mri", "biopsy"],
+   referral: "гематолог",
+   note: "CRAB: гиперкальциемия, почечная недостаточность, анемия, костные поражения."}
 ];
 
-/* ------------------------------ состояние ------------------------------ */
-const state = new Set();
-const $ = (s) => document.querySelector(s);
+const STAGE_TX = {
+  lung: {"I-II": "Лобэктомия с лимфодиссекцией; адъювантная ХТ при II стадии и PD-L1+.",
+         "III": "Неоадъювантная химиоиммунотерапия + операция либо химиолучевая + дурвалумаб.",
+         "IV": "Таргет по мутациям (EGFR, ALK), пембролизумаб при PD-L1 ≥50 %, ХТ + иммунотерапия."},
+  esophagus: {"I-II": "Эндоскопическая резекция при T1a; эзофагэктомия при T1b–T2.",
+              "III": "Неоадъювантная химиолучевая терапия или периоперационная FLOT → операция.",
+              "IV": "Стент, паллиативная ХТ, иммунотерапия, нутритивная поддержка."},
+  gastric: {"I-II": "ЭСД при T1a; гастрэктомия с D2 + периоперационная FLOT.",
+            "III": "Периоперационная FLOT; при HER2+ — трастузумаб.",
+            "IV": "ХТ платина + фторпиримидин, иммунотерапия при MSI-H, T-DXd при HER2+."},
+  crc: {"I-II": "Резекция с лимфодиссекцией; адъювант при II стадии высокого риска.",
+        "III": "Адъювант FOLFOX/CAPOX 3–6 мес; прямая кишка — химиолучевая + TME.",
+        "IV": "Резекция метастазов + ХТ ± цетуксимаб/бевацизумаб; MSI-H — пембролизумаб."},
+  pancreas: {"I-II": "Операция Уиппла + адъювант mFOLFIRINOX.",
+             "III": "Неоадъювант FOLFIRINOX, химиолучевая терапия.",
+             "IV": "FOLFIRINOX или гемцитабин + наб-паклитаксел; паллиатив (стент, блок)."},
+  kidney: {"I-II": "Резекция почки или нефрэктомия; адъювант пембролизумаб при высоком риске.",
+           "III": "Нефрэктомия + адъювант; при неоперабельности — таргетная терапия.",
+           "IV": "ТКИ ± иммунотерапия, циторедуктивная нефрэктомия, метастазэктомия."},
+  bladder: {"I-II": "NMIBC: ТУР + БЦЖ; MIBC: цистэктомия + неоадъювантная ХТ.",
+            "III": "Цистэктомия + неоадъювантная ХТ; альтернатива — тримодальная терапия.",
+            "IV": "Платиновая ХТ, пембролизумаб/атезолизумаб, энфортумаб."},
+  skin: {"I-II": "Иссечение с отступом 1–2 см + биопсия сторожевого узла.",
+         "III": "Лимфодиссекция; адъювант ниволумаб/пембролизумаб или таргет BRAF.",
+         "IV": "Ниволумаб + ипилимумаб, таргет при BRAF+, стереотаксис при мтс в мозг."},
+  breast: {"I-II": "Органосохраняющая операция + ЛТ или мастэктомия; гормонотерапия при ER+.",
+           "III": "Неоадъювантная ХТ → операция → ЛТ; анти-HER2 при HER2+.",
+           "IV": "CDK4/6 + гормонотерапия, T-DM1, иммунотерапия при TNBC, олапариб при BRCA."},
+  lymphoma: {"I-II": "ABVD при лимфоме Ходжкина, R-CHOP при DLBCL ± ЛТ.",
+             "III": "ХТ + ЛТ, ПЭТ-адаптированная тактика.",
+             "IV": "Интенсивная ХТ, CAR-T, аутологичная трансплантация."},
+  bone: {"I-II": "Неоадъювант MAP + органосохраняющая операция с эндопротезированием.",
+         "III": "Широкое иссечение + ЛТ/ХТ; GIST — иматиниб.",
+         "IV": "Доксорубицин + ифосфамид; при GIST — сунитиб/регорафениб."},
+  myeloma: {"I-II": "Наблюдение или бортезомиб-содержащая терапия.",
+            "III": "Бортезомиб/леналидомид + дексаметазон, аутологичная трансплантация.",
+            "IV": "Комбинированная терапия, CAR-T при рефрактерности."}
+};
 
+/* ============================ СОСТОЯНИЕ ============================ */
+const LS_LIST = "onco-check/patients/v1";
+const LS_CUR = "onco-check/current/v1";
+const state = {symptoms: new Set(), tests: new Set(), stage: {}, id: null};
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+
+function store(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+function load(key) { try { return JSON.parse(localStorage.getItem(key) || "null"); } catch (e) { return null; } }
+
+/* ============================ ЧИПЫ ============================ */
 function buildChips() {
   const host = $("#symptomGroups");
-  host.innerHTML = "";
   for (const [title, items] of GROUPS) {
     const h = document.createElement("div");
-    h.className = "group";
-    h.textContent = title;
+    h.className = "group"; h.textContent = title;
     host.appendChild(h);
     const box = document.createElement("div");
     box.className = "chips";
     for (const [id, label, w, red] of items) {
       const b = document.createElement("button");
-      b.type = "button";
-      b.className = "chip";
+      b.type = "button"; b.className = "chip"; b.dataset.id = id;
       b.setAttribute("aria-pressed", "false");
-      b.dataset.id = id;
       b.innerHTML = (red ? '<span class="rf" title="красный флаг"></span>' : "") + label;
-      b.addEventListener("click", () => toggle(id, b));
+      b.addEventListener("click", () => { toggle("symptoms", id, b); });
       box.appendChild(b);
     }
     host.appendChild(box);
   }
+
+  const thost = $("#testGroups");
+  const byGroup = {};
+  for (const [g, id, name] of TESTS) (byGroup[g] = byGroup[g] || []).push([id, name]);
+  for (const g of Object.keys(byGroup)) {
+    const h = document.createElement("div");
+    h.className = "group"; h.textContent = TEST_GROUP_NAMES[g] || g;
+    thost.appendChild(h);
+    const box = document.createElement("div");
+    box.className = "chips";
+    for (const [id, name] of byGroup[g]) {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "chip test"; b.dataset.test = id;
+      b.setAttribute("aria-pressed", "false");
+      b.textContent = name;
+      b.addEventListener("click", () => { toggle("tests", id, b); });
+      box.appendChild(b);
+    }
+    thost.appendChild(box);
+  }
 }
 
-function toggle(id, btn) {
-  if (state.has(id)) { state.delete(id); btn.setAttribute("aria-pressed", "false"); }
-  else { state.add(id); btn.setAttribute("aria-pressed", "true"); }
-  render();
+function toggle(kind, id, btn) {
+  const set = kind === "symptoms" ? state.symptoms : state.tests;
+  if (set.has(id)) { set.delete(id); btn.setAttribute("aria-pressed", "false"); }
+  else { set.add(id); btn.setAttribute("aria-pressed", "true"); }
+  autosave();
+  if (state.symptoms.size) render();
 }
 
-function weights() {
-  const map = new Map();
-  for (const [, items] of GROUPS) for (const [id, , w] of items) map.set(id, w);
-  return map;
-}
-const W = weights();
-
-function labelOf(id) {
-  for (const [, items] of GROUPS) for (const [i, l] of items) if (i === id) return l;
-  return id;
-}
-function isRed(id) {
-  for (const [, items] of GROUPS) for (const [i, , , r] of items) if (i === id) return r;
-  return false;
+function syncChips() {
+  $$(".chip[data-id]").forEach((b) =>
+    b.setAttribute("aria-pressed", state.symptoms.has(b.dataset.id) ? "true" : "false"));
+  $$(".chip[data-test]").forEach((b) =>
+    b.setAttribute("aria-pressed", state.tests.has(b.dataset.test) ? "true" : "false"));
 }
 
-function context() {
+/* ============================ ЛОГИКА ============================ */
+const W = new Map();
+for (const [, items] of GROUPS) for (const [id, , w] of items) W.set(id, w);
+const LABEL = new Map();
+const RED = new Map();
+for (const [, items] of GROUPS) for (const [id, l, , r] of items) { LABEL.set(id, l); RED.set(id, r); }
+
+function ctx() {
   return {
     age: parseInt($("#age").value || "0", 10) || 0,
     sex: $("#sex").value,
@@ -383,107 +519,291 @@ function context() {
   };
 }
 
-function scoreDisease(d, ctx) {
+function scoreDisease(d, c, syms) {
   const total = Object.values(d.s).reduce((a, b) => a + b, 0);
   let got = 0, hits = 0;
-  for (const [id, w] of Object.entries(d.s)) {
-    if (state.has(id)) { got += w; hits++; }
-  }
+  const set = syms || state.symptoms;
+  for (const [id, w] of Object.entries(d.s)) if (set.has(id)) { got += w; hits++; }
   if (!hits) return 0;
   let pct = (got / total) * 100;
-  // поправки
-  if (d.id === "lung" && ctx.smoke >= 20) pct *= 1.2;
-  if (d.id === "bladder" && ctx.smoke >= 20) pct *= 1.15;
-  if (d.id === "crc" && ctx.age >= 50) pct *= 1.12;
-  if (d.id === "gastric" && ctx.age >= 50) pct *= 1.08;
-  if (d.id === "breast" && ctx.sex === "m") pct *= 0.55;
-  if (d.id === "pancreas" && ctx.age >= 60) pct *= 1.1;
+  if (d.id === "lung" && c.smoke >= 20) pct *= 1.2;
+  if (d.id === "bladder" && c.smoke >= 20) pct *= 1.15;
+  if (d.id === "crc" && c.age >= 50) pct *= 1.12;
+  if (d.id === "gastric" && c.age >= 50) pct *= 1.08;
+  if (d.id === "pancreas" && c.age >= 60) pct *= 1.1;
+  if (d.id === "breast" && c.sex === "m") pct *= 0.55;
   return Math.max(0, Math.min(99, Math.round(pct)));
 }
 
 function render() {
   const out = $("#result");
-  if (!state.size) {
-    out.innerHTML = '<div class="empty">Отметьте симптомы слева и нажмите «Подобрать обследование».</div>';
+  if (!state.symptoms.size) {
+    out.innerHTML = '<div class="empty">Отметьте симптомы и нажмите «Подобрать обследование».</div>';
     return;
   }
-  const ctx = context();
-  const rows = DISEASES.map((d) => ({ d, p: scoreDisease(d, ctx) }))
-    .filter((x) => x.p > 0)
-    .sort((a, b) => b.p - a.p)
-    .slice(0, 5);
+  const c = ctx();
+  const rows = DISEASES.map((d) => ({d, p: scoreDisease(d, c)}))
+    .filter((x) => x.p > 0).sort((a, b) => b.p - a.p).slice(0, 5);
 
-  const reds = [...state].filter(isRed);
+  const reds = [...state.symptoms].filter((id) => RED.get(id));
   let html = "";
 
   if (reds.length) {
-    html += '<div class="alert red"><b>Красные флаги:</b> ' + reds.map(labelOf).join("; ") +
-            ". Требуется дообследование в течение 1–2 недель, при кровотечении — срочно.</div>";
+    html += '<div class="alert red"><b>Красные флаги:</b> ' + reds.map((id) => LABEL.get(id)).join("; ") +
+            ". Дообследование в течение 1–2 недель; при кровотечении — срочно.</div>";
   } else if (rows.length && rows[0].p >= 40) {
-    html += '<div class="alert amber">Симптомы требуют исключения ЗНО: консультация онколога до 3 рабочих дней, ' +
-            "обследование до 14 дней.</div>";
+    html += '<div class="alert amber">Требуется исключение ЗНО: консультация онколога до 3 рабочих дней, обследование до 14 дней.</div>';
   }
 
   if (!rows.length) {
-    html += '<div class="alert green">Специфических онкологических сочетаний не найдено. Наблюдение, ' +
-            "контроль симптомов; при сохранении жалоб — повторный осмотр.</div>";
+    html += '<div class="alert green">Специфических онкологических сочетаний не найдено. Наблюдение; при сохранении жалоб — повторный осмотр.</div>';
   } else {
-    html += '<div class="muted" style="margin-bottom:8px">Подозрения (по убыванию соответствия):</div>';
-    for (const { d, p } of rows) {
-      html += '<div class="dis"><div class="dis-top"><h3>' + d.name +
-              '</h3><div class="score">' + p + '%</div></div>' +
+    for (const {d, p} of rows) {
+      const done = d.tests.filter((t) => state.tests.has(t)).length;
+      const prog = done ? "выполнено " + done + " из " + d.tests.length : "обследование не начато";
+      html += '<div class="dis"><div class="dis-top"><h3>' + d.name + '</h3><div class="score">' + p + '%</div></div>' +
               '<div class="bar"><span style="width:' + p + '%"></span></div>' +
-              "<ul>" + d.tests.map((t) => "<li>" + t + "</li>").join("") + "</ul>" +
-              '<div style="margin-top:8px"><span class="tag">' + d.group + "</span>" +
-              '<span class="tag ref">' + d.referral + "</span></div>" +
-              (d.note ? '<div class="muted" style="margin-top:6px">' + d.note + "</div>" : "") +
+              '<div class="progress">' + prog + '</div>' +
+              '<ul class="tests">' + d.tests.map((t) => {
+                const ok = state.tests.has(t);
+                return '<li class="' + (ok ? "done" : "todo") + '"><span class="m">' + (ok ? "✔" : "○") + "</span>" + TEST_NAME[t] + "</li>";
+              }).join("") + "</ul>" +
+              stageUI(d) +
+              (d.note ? '<div class="hint" style="margin:6px 0 0">' + d.note + "</div>" : "") +
               "</div>";
     }
-    // сводный план по топ-3
-    const plan = [];
-    for (const { d } of rows.slice(0, 3)) {
-      for (const t of d.tests) if (!plan.includes(t)) plan.push(t);
+    // что осталось из плана по топ-3
+    const rest = [];
+    for (const {d} of rows.slice(0, 3)) for (const t of d.tests)
+      if (!state.tests.has(t) && !rest.includes(t)) rest.push(t);
+    if (rest.length) {
+      html += '<div class="plan"><h3 style="font-size:14.5px;color:#16324F;margin:8px 0 0">Что осталось выполнить</h3>' +
+              "<ol>" + rest.map((t) => "<li>" + TEST_NAME[t] + "</li>").join("") + "</ol>" +
+              '<div class="hint" style="margin-top:6px">Сначала визуализация и морфологическая верификация, затем стадирование и консилиум.</div></div>';
+    } else {
+      html += '<div class="alert green" style="margin-top:10px">Обследование по ведущим подозрениям отмечено как выполненное — переходите к стадированию и консилиуму.</div>';
     }
-    html += '<div class="plan"><h3 style="font-size:14.5px;color:#16324F;margin:6px 0 0">Сводный план обследования</h3>' +
-            "<ol>" + plan.map((t) => "<li>" + t + "</li>").join("") + "</ol>" +
-            '<div class="muted" style="margin-top:6px">Сначала — визуализация и морфологическая верификация, ' +
-            "затем стадирование и консилиум.</div></div>";
   }
-
-  if (ctx.smoke >= 20) html += '<div class="muted" style="margin-top:10px">Учтено: курение ≥ 20 пачка-лет.</div>';
+  if (c.smoke >= 20) html += '<div class="hint" style="margin-top:8px">Учтено: курение ≥ 20 пачка-лет.</div>';
   out.innerHTML = html;
 }
 
-/* ------------------------------ инициализация ------------------------------ */
+function stageUI(d) {
+  const cur = state.stage[d.id] || "";
+  const chips = ["I", "II", "III", "IV"].map((st) =>
+    '<button class="st-chip' + (cur === st ? " on" : "") + '" data-d="' + d.id + '" data-stage="' + st + '">' + st + "</button>"
+  ).join("");
+  const reset = cur ? '<button class="st-chip clear" data-d="' + d.id + '" data-stage="">сброс</button>' : "";
+  let html = '<div class="stages"><span>Стадия:</span>' + chips + reset + "</div>";
+  if (cur) {
+    const key = (cur === "I" || cur === "II") ? "I-II" : cur;
+    const tx = (STAGE_TX[d.id] || {})[key];
+    if (tx) html += '<div class="tx"><b>Тактика при стадии ' + cur + ":</b> " + tx + "</div>";
+  }
+  return html;
+}
+
+/* ============================ ПАЦИЕНТЫ ============================ */
+function currentRecord() {
+  return {
+    id: state.id, name: $("#pname").value.trim(),
+    age: $("#age").value, sex: $("#sex").value, smoke: $("#smoke").value,
+    symptoms: [...state.symptoms], tests: [...state.tests], stage: state.stage,
+    updated: Date.now()
+  };
+}
+
+function autosave() { store(LS_CUR, currentRecord()); }
+
+function savePatient() {
+  const rec = currentRecord();
+  const list = load(LS_LIST) || [];
+  if (!rec.name) rec.name = "Пациент " + new Date().toLocaleDateString("ru-RU");
+  if (rec.id) {
+    const i = list.findIndex((x) => x.id === rec.id);
+    if (i >= 0) list[i] = rec; else list.push(rec);
+  } else {
+    rec.id = String(Date.now());
+    state.id = rec.id;
+    list.push(rec);
+  }
+  store(LS_LIST, list);
+  store(LS_CUR, rec);
+  updateHistCount();
+  toast("Сохранено: " + rec.name);
+}
+
+function loadPatient(id) {
+  const list = load(LS_LIST) || [];
+  const rec = list.find((x) => x.id === id);
+  if (!rec) return;
+  state.id = rec.id;
+  state.symptoms = new Set(rec.symptoms || []);
+  state.tests = new Set(rec.tests || []);
+  state.stage = rec.stage || {};
+  $("#pname").value = rec.name || "";
+  $("#age").value = rec.age || "";
+  $("#sex").value = rec.sex || "";
+  $("#smoke").value = rec.smoke || "";
+  syncChips();
+  store(LS_CUR, rec);
+  closeHistory();
+  render();
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function deletePatient(id) {
+  if (!confirm("Удалить запись из истории?")) return;
+  let list = (load(LS_LIST) || []).filter((x) => x.id !== id);
+  store(LS_LIST, list);
+  if (state.id === id) { state.id = null; }
+  updateHistCount();
+  openHistory();
+}
+
+function updateHistCount() {
+  const n = (load(LS_LIST) || []).length;
+  $("#histCount").textContent = n ? "(" + n + ")" : "";
+}
+
+function openHistory() {
+  const list = (load(LS_LIST) || []).slice().sort((a, b) => (b.updated || 0) - (a.updated || 0));
+  const body = $("#histBody");
+  if (!list.length) {
+    body.innerHTML = '<div class="empty">Пока пусто. Заполните данные и нажмите «Сохранить».</div>';
+  } else {
+    body.innerHTML = '<div class="plist">' + list.map((r) => {
+      const d = new Date(r.updated || Date.now());
+      const cnt = (r.symptoms || []).length, tcnt = (r.tests || []).length;
+      let top = "";
+      try {
+        const syms = new Set(r.symptoms || []);
+        const c = {age: parseInt(r.age || "0", 10) || 0, sex: r.sex || "", smoke: parseInt(r.smoke || "0", 10) || 0};
+        const best = DISEASES.map((x) => ({n: x.name, p: scoreDisease(x, c, syms)})).sort((a, b) => b.p - a.p)[0];
+        top = best && best.p ? best.n + " · " + best.p + "%" : "";
+      } catch (e) {}
+      return '<div class="pitem"><div><b>' + (r.name || "Без имени") + "</b>" +
+             '<div class="meta">' + d.toLocaleString("ru-RU", {day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit"}) +
+             " · симптомов: " + cnt + " · методов: " + tcnt + (top ? " · " + top : "") + "</div></div>" +
+             '<div class="ops"><button class="icon-btn" data-open="' + r.id + '" aria-label="Открыть">↗</button>' +
+             '<button class="icon-btn danger" data-del="' + r.id + '" aria-label="Удалить">✕</button></div></div>';
+    }).join("") + "</div>";
+  }
+  $("#historyModal").hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeHistory() {
+  $("#historyModal").hidden = true;
+  document.body.style.overflow = "";
+}
+
+function toast(msg) {
+  const el = document.createElement("div");
+  el.textContent = msg;
+  el.style.cssText = "position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:#16324F;color:#fff;" +
+    "padding:10px 16px;border-radius:99px;font-size:13px;z-index:60;box-shadow:0 6px 20px rgba(22,50,79,.3)";
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1800);
+}
+
+function newPatient() {
+  if (state.symptoms.size || state.tests.size) {
+    if (!confirm("Очистить текущие данные и начать нового пациента?")) return;
+  }
+  state.id = null; state.symptoms = new Set(); state.tests = new Set(); state.stage = {};
+  $("#pname").value = ""; $("#age").value = ""; $("#sex").value = ""; $("#smoke").value = "";
+  syncChips(); render(); store(LS_CUR, currentRecord());
+}
+
+/* ============================ ИНИЦИАЛИЗАЦИЯ ============================ */
 buildChips();
 
-// предустановка из ссылки: #s=cough,weight&age=62&smoke=30
+(function restore() {
+  const cur = load(LS_CUR);
+  if (cur) {
+    state.id = cur.id || null;
+    state.symptoms = new Set(cur.symptoms || []);
+    state.tests = new Set(cur.tests || []);
+    $("#pname").value = cur.name || "";
+    $("#age").value = cur.age || "";
+    $("#sex").value = cur.sex || "";
+    $("#smoke").value = cur.smoke || "";
+  }
+  syncChips();
+  updateHistCount();
+  if (state.symptoms.size) render();
+})();
+
+// предустановка из ссылки: #s=cough,weight&t=ct,pet&age=64&smoke=35&sex=m
 (function preset() {
   const h = location.hash.replace(/^#/, "");
   if (!h) return;
   const p = new URLSearchParams(h);
-  (p.get("s") || "").split(",").filter(Boolean).forEach((id) => {
-    if (W.has(id)) state.add(id);
-  });
+  (p.get("s") || "").split(",").filter(Boolean).forEach((id) => { if (W.has(id)) state.symptoms.add(id); });
+  (p.get("t") || "").split(",").filter(Boolean).forEach((id) => { if (TEST_NAME[id]) state.tests.add(id); });
   if (p.get("age")) $("#age").value = p.get("age");
   if (p.get("sex")) $("#sex").value = p.get("sex");
   if (p.get("smoke")) $("#smoke").value = p.get("smoke");
-  document.querySelectorAll(".chip").forEach((b) =>
-    b.setAttribute("aria-pressed", state.has(b.dataset.id) ? "true" : "false")
-  );
+  (p.get("st") || "").split(",").filter(Boolean).forEach((pair) => {
+    const [id, st] = pair.split(":");
+    if (STAGE_TX[id] && ["I", "II", "III", "IV"].includes(st)) state.stage[id] = st;
+  });
+  syncChips();
 })();
 
-$("#calc").addEventListener("click", render);
-$("#reset").addEventListener("click", () => {
-  state.clear();
-  document.querySelectorAll(".chip").forEach((b) => b.setAttribute("aria-pressed", "false"));
-  $("#age").value = ""; $("#sex").value = ""; $("#smoke").value = "";
+$("#calc").addEventListener("click", () => { render(); $("#result").scrollIntoView({behavior: "smooth", block: "start"}); });
+$("#calc2").addEventListener("click", () => { render(); $("#result").scrollIntoView({behavior: "smooth", block: "start"}); });
+$("#save").addEventListener("click", savePatient);
+$("#save2").addEventListener("click", savePatient);
+$("#newPatient").addEventListener("click", newPatient);
+$("#openHistory").addEventListener("click", openHistory);
+$("#closeHistory").addEventListener("click", closeHistory);
+$("#historyModal").addEventListener("click", (e) => { if (e.target.id === "historyModal") closeHistory(); });
+
+$("#result").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-stage]");
+  if (!b) return;
+  const id = b.dataset.d, st = b.dataset.stage;
+  if (!st) delete state.stage[id];
+  else state.stage[id] = st;
+  autosave();
   render();
 });
-["age", "sex", "smoke"].forEach((id) =>
-  $("#" + id).addEventListener("change", () => { if (state.size) render(); })
+
+$("#histBody").addEventListener("click", (e) => {
+  const open = e.target.closest("[data-open]");
+  const del = e.target.closest("[data-del]");
+  if (open) loadPatient(open.dataset.open);
+  if (del) deletePatient(del.dataset.del);
+});
+
+$("#exportBtn").addEventListener("click", () => {
+  const data = JSON.stringify({patients: load(LS_LIST) || [], exported: new Date().toISOString()}, null, 2);
+  const blob = new Blob([data], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "onco-patients.json";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+
+$("#clearAll").addEventListener("click", () => {
+  if (!confirm("Удалить всю историю пациентов на этом устройстве?")) return;
+  localStorage.removeItem(LS_LIST);
+  localStorage.removeItem(LS_CUR);
+  state.id = null; state.symptoms = new Set(); state.tests = new Set(); state.stage = {};
+  syncChips(); updateHistCount(); render();
+  closeHistory();
+});
+
+["pname", "age", "sex", "smoke"].forEach((id) =>
+  $("#" + id).addEventListener("input", autosave)
 );
-if (state.size) render();
+["age", "sex", "smoke"].forEach((id) =>
+  $("#" + id).addEventListener("change", () => { if (state.symptoms.size) render(); })
+);
+if (state.symptoms.size) render();
 </script>
 </body>
 </html>
