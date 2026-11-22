@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Онко-скрининг: подозрения по симптомам</title>
+<style>
+  :root{
+    --navy:#16324F; --blue:#1F4E79; --accent:#2D6CB5;
+    --bg:#F4F7FB; --card:#FFFFFF; --line:#D8E2EF;
+    --text:#1B2430; --muted:#5B6B7C;
+    --red:#C62828; --red-bg:#FDECEA; --green:#2E7D32; --green-bg:#E9F5E9;
+    --amber:#B26A00; --amber-bg:#FFF6E5;
+    --radius:14px; --shadow:0 2px 10px rgba(22,50,79,.07);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.45; font-size:15px;
+  }
+  header{
+    background:linear-gradient(135deg,#16324F 0%,#1F4E79 60%,#2D6CB5 100%);
+    color:#fff; padding:28px 20px 24px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  header .wrap{padding:0}
+  h1{margin:0 0 6px;font-size:26px;line-height:1.2;letter-spacing:-.2px}
+  .sub{opacity:.9;font-size:14px;max-width:820px}
+  .badge{display:inline-block;margin-top:12px;background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.25);padding:6px 10px;border-radius:999px;font-size:12.5px}
+  main{padding:22px 0 40px}
+  .layout{display:grid;grid-template-columns:minmax(320px,1fr) minmax(320px,1fr);gap:20px;align-items:start}
+  @media (max-width:900px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+  .card h2{margin:0 0 4px;font-size:17px;color:var(--navy)}
+  .card .hint{color:var(--muted);font-size:12.5px;margin-bottom:12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .field{flex:1 1 120px;min-width:110px}
+  label.f{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+  input[type=number],select{
+    width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;
+    font-size:14px;background:#fff;color:var(--text)
+  }
+  input[type=number]:focus,select:focus{outline:2px solid #BBD3EE;border-color:#9DBEE4}
+  .group{margin:14px 0 4px;font-size:12px;font-weight:600;color:var(--blue);
+    text-transform:uppercase;letter-spacing:.04em}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);
+    background:#FBFCFE;color:var(--text);padding:7px 11px;border-radius:999px;
+    font-size:13px;cursor:pointer;user-select:none;transition:.12s
+  }
+  .chip:hover{border-color:#9DBEE4;background:#F1F6FC}
+  .chip[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+  .chip .rf{width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block}
+  .chip[aria-pressed=true] .rf{background:#FFB4AB}
+  .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  button{font:inherit;cursor:pointer;border-radius:10px;padding:10px 16px;border:1px solid transparent}
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-primary:hover{background:#1F4E79}
+  .btn-ghost{background:#fff;border-color:var(--line);color:var(--text)}
+  .btn-ghost:hover{background:#F1F6FC}
+  .alert{border-radius:12px;padding:12px 14px;font-size:13.5px;margin-bottom:14px;border:1px solid}
+  .alert.red{background:var(--red-bg);border-color:#E7B6B0;color:#7A211B}
+  .alert.amber{background:var(--amber-bg);border-color:#EBD3A6;color:#6B4700}
+  .alert.green{background:var(--green-bg);border-color:#B7D9B7;color:#1E5B20}
+  .empty{color:var(--muted);font-size:14px;padding:22px 4px;text-align:center}
+  .dis{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:#FCFDFF}
+  .dis-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .dis h3{margin:0;font-size:15.5px;color:var(--navy)}
+  .score{font-weight:700;font-size:14px;color:var(--blue);white-space:nowrap}
+  .bar{height:7px;background:#E7EEF7;border-radius:99px;overflow:hidden;margin:8px 0 10px}
+  .bar span{display:block;height:100%;background:linear-gradient(90deg,#2D6CB5,#4E93D9);border-radius:99px}
+  .dis ul{margin:6px 0 0;padding-left:18px}
+  .dis li{margin:3px 0;font-size:13.4px}
+  .tag{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:999px;background:#EEF3FA;color:#2B4A6E;margin-right:4px}
+  .tag.ref{background:#EAF2FB;color:#2B4A6E;border:1px solid #CFE0F2}
+  .plan{margin-top:6px}
+  .plan ol{margin:8px 0 0;padding-left:20px}
+  .plan li{margin:5px 0;font-size:14px}
+  .muted{color:var(--muted);font-size:12.5px}
+  .flow{display:grid;gap:6px;margin-top:10px}
+  .flow .step{background:#F6F9FD;border:1px solid var(--line);border-left:4px solid var(--blue);
+    border-radius:10px;padding:9px 12px;font-size:13.5px}
+  .flow .arrow{color:#9DBEE4;text-align:center;font-size:14px;line-height:1}
+  footer{border-top:1px solid var(--line);background:#fff;padding:18px 0;font-size:12.5px;color:var(--muted)}
+  footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  details summary{cursor:pointer;color:var(--blue);font-weight:600;font-size:14px;margin-top:4px}
+  @media print{
+    header{background:#fff;color:#000;padding:0 0 8px}
+    .layout{grid-template-columns:1fr}
+    .card{box-shadow:none;border-color:#ccc}
+    .actions,.chips{display:none}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Онко-скрининг: подозрения по симптомам</h1>
+    <div class="sub">Учебный инструмент по конспекту для зачёта: отмечаете симптомы — получаете вероятные онкологические
+      подозрения, красные флаги и план обследования первой линии. Не заменяет врача и не является диагнозом.</div>
+    <div class="badge">Основано на клинических рекомендациях МЗ РФ / RUSSCO · только образовательные цели</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="layout">
+    <!-- ЛЕВАЯ КОЛОНКА: ВВОД -->
+    <section class="card" aria-label="Ввод данных">
+      <h2>1. Данные пациента и симптомы</h2>
+      <div class="hint">Отметьте всё, что есть. Красная точка — «красный флаг».</div>
+
+      <div class="row">
+        <div class="field">
+          <label class="f" for="age">Возраст</label>
+          <input id="age" type="number" min="0" max="110" placeholder="например, 62">
+        </div>
+        <div class="field">
+          <label class="f" for="sex">Пол</label>
+          <select id="sex">
+            <option value="">не указан</option>
+            <option value="m">мужской</option>
+            <option value="f">женский</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="f" for="smoke">Курение, пачка-лет</label>
+          <input id="smoke" type="number" min="0" max="150" placeholder="0">
+        </div>
+      </div>
+
+      <div id="symptomGroups"></div>
+
+      <div class="actions">
+        <button class="btn-primary" id="calc">Подобрать обследование</button>
+        <button class="btn-ghost" id="reset">Сбросить</button>
+      </div>
+    </section>
+
+    <!-- ПРАВАЯ КОЛОНКА: РЕЗУЛЬТАТ -->
+    <section class="card" aria-live="polite" aria-label="Результат">
+      <h2>2. Подозрения и план обследования</h2>
+      <div class="hint">Результат отсортирован по соответствию симптомам. Учитываются возраст и курение.</div>
+      <div id="result"><div class="empty">Отметьте симптомы слева и нажмите «Подобрать обследование».</div></div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:20px">
+    <h2>Схема: осмотр → диагностика → лечение</h2>
+    <div class="hint">Короткий алгоритм, по которому строится вся логика приложения.</div>
+    <div class="flow">
+      <div class="step"><b>1. Жалобы и анамнез</b> — длительность, динамика; онконастороженность при симптоме &gt; 3 недель</div>
+      <div class="arrow">↓</div>
+      <div class="step"><b>2. Физикальный осмотр</b> — кожа и невусы, лимфоузлы, молочные железы, живот, пальцевое ректальное исследование</div>
+      <div class="arrow">↓</div>
+      <div class="step"><b>3. Лаборатория</b> — ОАК, биохимия, коагулограмма; онкомаркеры — только для динамики</div>
+      <div class="arrow">↓</div>
+      <div class="step"><b>4. Визуализация</b> — УЗИ, КТ/МРТ с контрастом, ПЭТ/КТ, эндоскопия, маммография</div>
+      <div class="arrow">↓</div>
+      <div class="step"><b>5. Морфологическая верификация</b> — гистология, ИГХ, молекулярные маркеры; без неё лечение не начинают</div>
+      <div class="arrow">↓</div>
+      <div class="step"><b>6. Стадирование TNM</b> → консилиум → лечение по стадии (см. подробный конспект)</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© Учебный проект · данные: клинические рекомендации МЗ РФ, RUSSCO</div>
+    <div>Не является медицинской рекомендацией. При подозрении на ЗНО — онколог.</div>
+  </div>
+</footer>
+
+<script>
+/* ------------------------------ данные ------------------------------ */
+const GROUPS = [
+  ["Общие", [
+    ["fatigue", "Слабость, утомляемость", 1, false],
+    ["weight", "Потеря массы тела > 5 %", 3, true],
+    ["fever", "Лихорадка > 2 недель", 2, false],
+    ["night_sweat", "Ночная потливость", 2, false],
+    ["anemia", "Анемия неясной причины", 3, true],
+    ["thrombosis", "Тромбозы, тромбофлебит", 2, false],
+    ["itch", "Кожный зуд без причины", 1, false]
+  ]],
+  ["Дыхание", [
+    ["cough", "Кашель > 3 недель", 2, false],
+    ["hemoptysis", "Кровохарканье", 3, true],
+    ["dyspnea", "Одышка", 1, false],
+    ["chest", "Боль в грудной клетке", 1, false],
+    ["hoarse", "Осиплость голоса", 2, false]
+  ]],
+  ["Желудочно-кишечный тракт", [
+    ["dysphagia", "Дисфагия (затруднение глотания)", 3, true],
+    ["odyno", "Одинофагия, ком за грудиной", 2, false],
+    ["dyspepsia", "Диспепсия, боль в эпигастрии", 1, false],
+    ["early_satiety", "Раннее насыщение", 2, false],
+    ["nausea", "Тошнота, рвота", 1, false],
+    ["stool", "Изменение стула > 4 недель", 2, false],
+    ["blood_stool", "Кровь в кале", 3, true],
+    ["jaundice", "Желтуха", 3, true],
+    ["back_pain", "Боль в спине, опоясывающая", 2, false],
+    ["obstruction", "Вздутие, признаки непроходимости", 2, false],
+    ["new_diabetes", "Впервые выявленный диабет", 2, false]
+  ]],
+  ["Мочевыделительная система", [
+    ["hematuria", "Безболевая гематурия", 3, true],
+    ["dysuria", "Дизурия, частые позывы", 1, false],
+    ["flank", "Боль в боку", 1, false],
+    ["mass", "Пальпируемое образование живота", 3, true]
+  ]],
+  ["Кожа", [
+    ["nevus", "Изменение невуса (ABCDE)", 3, true],
+    ["ulcer", "Незаживающая язва, бляшка > 1 мес", 2, false],
+    ["bleed", "Кровоточивость образования", 2, false]
+  ]],
+  ["Молочная железа", [
+    ["lump", "Плотный узел в молочной железе", 3, true],
+    ["retraction", "Втяжение соска или кожи", 2, false],
+    ["discharge", "Выделения из соска", 2, false],
+    ["peau", "Симптом «лимонной корки»", 3, true]
+  ]],
+  ["Лимфоузлы", [
+    ["adenopathy", "Лимфоузлы > 1 см и > 4 недель", 3, true],
+    ["solid", "Плотные безболезненные узлы", 2, false],
+    ["spleen", "Гепатоспленомегалия", 2, false]
+  ]],
+  ["Кости и мягкие ткани", [
+    ["bone_pain", "Ночная боль в кости", 2, false],
+    ["swelling", "Припухлость, образование", 2, false],
+    ["fracture", "Патологический перелом", 3, true]
+  ]]
+];
+
+const DISEASES = [
+  {
+    id: "lung", name: "Рак лёгкого", group: "Грудная клетка",
+    s: {cough: 3, hemoptysis: 3, dyspnea: 2, chest: 2, hoarse: 2, weight: 2, fatigue: 1, fever: 1},
+    tests: ["КТ грудной клетки с контрастом", "Бронхоскопия / EBUS-ТББ с биопсией",
+            "ПЭТ/КТ, КТ головного мозга и надпочечников", "ИГХ (p40, TTF-1), EGFR/ALK/PD-L1"],
+    referral: "онколог / торакальный хирург",
+    note: "Скрининг: низкодозная КТ 55–74 года при ≥30 пачка-лет."
+  },
+  {
+    id: "esophagus", name: "Рак пищевода", group: "ЖКТ",
+    s: {dysphagia: 3, odyno: 3, weight: 3, nausea: 1, hoarse: 2, chest: 1},
+    tests: ["ЭГДС с биопсией (NBI, хромоскопия)", "ЭУС пищевода", "КТ грудной клетки и живота, ПЭТ/КТ"],
+    referral: "онколог / торакальный хирург",
+    note: "Факторы: алкоголь + курение, пищевод Барретта, ахалазия."
+  },
+  {
+    id: "gastric", name: "Рак желудка", group: "ЖКТ",
+    s: {dyspepsia: 3, early_satiety: 3, weight: 3, nausea: 2, anemia: 2, obstruction: 1},
+    tests: ["ЭГДС с биопсией (6–8 биоптатов)", "КТ брюшной полости с контрастом", "ЭУС, лапароскопия по показаниям",
+            "HER2, MSI/dMMR, PD-L1"],
+    referral: "онколог / абдоминальный хирург",
+    note: "Фактор риска — H. pylori; ЭГДС в 45 лет в рамках диспансеризации."
+  },
+  {
+    id: "crc", name: "Колоректальный рак", group: "ЖКТ",
+    s: {blood_stool: 3, stool: 3, anemia: 3, weight: 2, obstruction: 2, fatigue: 1},
+    tests: ["Колоноскопия с биопсией", "КТ грудной клетки, живота и таза", "РЭА, RAS/BRAF, MSI"],
+    referral: "онколог / колопроктолог",
+    note: "Скрининг: кал на скрытую кровь 40–75, колоноскопия в 45 и 65 лет."
+  },
+  {
+    id: "pancreas", name: "Рак поджелудочной железы", group: "ЖКТ",
+    s: {back_pain: 3, jaundice: 3, weight: 3, new_diabetes: 2, nausea: 2, thrombosis: 2, fatigue: 1},
+    tests: ["КТ с контрастом по панкреатическому протоколу", "ЭУС с биопсией", "МРТ/МРХПГ, CA 19-9"],
+    referral: "онколог / абдоминальный хирург",
+    note: "Оценка резектабельности — до морфологии; биопсия обязательна перед ХТ."
+  },
+  {
+    id: "kidney", name: "Рак почки", group: "Мочевые",
+    s: {hematuria: 3, flank: 2, mass: 3, weight: 2, fever: 1, anemia: 1, thrombosis: 1},
+    tests: ["УЗИ почек", "КТ почек с контрастом (3 фазы)", "КТ грудной клетки, МРТ головного мозга по показаниям"],
+    referral: "онкоуролог",
+    note: "50–60 % — случайная находка при УЗИ/КТ."
+  },
+  {
+    id: "bladder", name: "Рак мочевого пузыря", group: "Мочевые",
+    s: {hematuria: 3, dysuria: 2, flank: 1},
+    tests: ["Цистоскопия с биопсией / ТУР", "КТ-урография", "Цитология мочи"],
+    referral: "онкоуролог",
+    note: "Курение — причина до 50 % случаев."
+  },
+  {
+    id: "skin", name: "Меланома и рак кожи", group: "Кожа",
+    s: {nevus: 3, bleed: 2, ulcer: 2},
+    tests: ["Дерматоскопия, фотофиксация", "Эксцизионная биопсия с отступом 1–2 мм",
+            "Гистология (Бреслоу), ИГХ S100/Melan-A, BRAF"],
+    referral: "онкодерматолог",
+    note: "Меланому не наблюдают: подозрительный невус — эксцизия."
+  },
+  {
+    id: "breast", name: "Рак молочной железы", group: "Молочная железа",
+    s: {lump: 3, retraction: 3, discharge: 2, peau: 3, adenopathy: 1},
+    tests: ["Маммография + УЗИ", "Трепанобиопсия с ИГХ (ER, PR, HER2, Ki-67)", "КТ/остеосцинтиграфия при III–IV стадии"],
+    referral: "онкомаммолог",
+    note: "Скрининг: маммография 40–75 лет 1 раз в 2 года."
+  },
+  {
+    id: "lymphoma", name: "Лимфома, лейкоз", group: "Кровь",
+    s: {adenopathy: 3, solid: 3, night_sweat: 3, fever: 2, itch: 2, weight: 2, spleen: 2, fatigue: 1, anemia: 1},
+    tests: ["Эксцизионная биопсия узла с ИГХ", "ПЭТ/КТ", "ОАК, ЛДГ, миелограмма, проточная цитометрия"],
+    referral: "гематолог / онколог",
+    note: "В-симптомы: лихорадка, потливость, потеря массы."
+  },
+  {
+    id: "bone", name: "Опухоли костей и мягких тканей", group: "Кости",
+    s: {bone_pain: 3, swelling: 3, fracture: 3, weight: 1},
+    tests: ["Рентгенография зоны боли", "МРТ с контрастом", "Трепанобиопсия в специализированном центре",
+            "КТ грудной клетки"],
+    referral: "онкоортопед / саркомный центр",
+    note: "Биопсия — только в референсном центре, иначе риск загрязнения."
+  },
+  {
+    id: "myeloma", name: "Множественная миелома", group: "Кровь",
+    s: {bone_pain: 3, anemia: 3, fatigue: 2, weight: 1},
+    tests: ["М-градиент, иммунофиксация, свободные лёгкие цепи", "Миелограмма", "МРТ/КТ скелета, кальций, креатинин"],
+    referral: "гематолог",
+    note: "CRAB: гиперкальциемия, почечная недостаточность, анемия, костные поражения."
+  }
+];
+
+/* ------------------------------ состояние ------------------------------ */
+const state = new Set();
+const $ = (s) => document.querySelector(s);
+
+function buildChips() {
+  const host = $("#symptomGroups");
+  host.innerHTML = "";
+  for (const [title, items] of GROUPS) {
+    const h = document.createElement("div");
+    h.className = "group";
+    h.textContent = title;
+    host.appendChild(h);
+    const box = document.createElement("div");
+    box.className = "chips";
+    for (const [id, label, w, red] of items) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.setAttribute("aria-pressed", "false");
+      b.dataset.id = id;
+      b.innerHTML = (red ? '<span class="rf" title="красный флаг"></span>' : "") + label;
+      b.addEventListener("click", () => toggle(id, b));
+      box.appendChild(b);
+    }
+    host.appendChild(box);
+  }
+}
+
+function toggle(id, btn) {
+  if (state.has(id)) { state.delete(id); btn.setAttribute("aria-pressed", "false"); }
+  else { state.add(id); btn.setAttribute("aria-pressed", "true"); }
+  render();
+}
+
+function weights() {
+  const map = new Map();
+  for (const [, items] of GROUPS) for (const [id, , w] of items) map.set(id, w);
+  return map;
+}
+const W = weights();
+
+function labelOf(id) {
+  for (const [, items] of GROUPS) for (const [i, l] of items) if (i === id) return l;
+  return id;
+}
+function isRed(id) {
+  for (const [, items] of GROUPS) for (const [i, , , r] of items) if (i === id) return r;
+  return false;
+}
+
+function context() {
+  return {
+    age: parseInt($("#age").value || "0", 10) || 0,
+    sex: $("#sex").value,
+    smoke: parseInt($("#smoke").value || "0", 10) || 0
+  };
+}
+
+function scoreDisease(d, ctx) {
+  const total = Object.values(d.s).reduce((a, b) => a + b, 0);
+  let got = 0, hits = 0;
+  for (const [id, w] of Object.entries(d.s)) {
+    if (state.has(id)) { got += w; hits++; }
+  }
+  if (!hits) return 0;
+  let pct = (got / total) * 100;
+  // поправки
+  if (d.id === "lung" && ctx.smoke >= 20) pct *= 1.2;
+  if (d.id === "bladder" && ctx.smoke >= 20) pct *= 1.15;
+  if (d.id === "crc" && ctx.age >= 50) pct *= 1.12;
+  if (d.id === "gastric" && ctx.age >= 50) pct *= 1.08;
+  if (d.id === "breast" && ctx.sex === "m") pct *= 0.55;
+  if (d.id === "pancreas" && ctx.age >= 60) pct *= 1.1;
+  return Math.max(0, Math.min(99, Math.round(pct)));
+}
+
+function render() {
+  const out = $("#result");
+  if (!state.size) {
+    out.innerHTML = '<div class="empty">Отметьте симптомы слева и нажмите «Подобрать обследование».</div>';
+    return;
+  }
+  const ctx = context();
+  const rows = DISEASES.map((d) => ({ d, p: scoreDisease(d, ctx) }))
+    .filter((x) => x.p > 0)
+    .sort((a, b) => b.p - a.p)
+    .slice(0, 5);
+
+  const reds = [...state].filter(isRed);
+  let html = "";
+
+  if (reds.length) {
+    html += '<div class="alert red"><b>Красные флаги:</b> ' + reds.map(labelOf).join("; ") +
+            ". Требуется дообследование в течение 1–2 недель, при кровотечении — срочно.</div>";
+  } else if (rows.length && rows[0].p >= 40) {
+    html += '<div class="alert amber">Симптомы требуют исключения ЗНО: консультация онколога до 3 рабочих дней, ' +
+            "обследование до 14 дней.</div>";
+  }
+
+  if (!rows.length) {
+    html += '<div class="alert green">Специфических онкологических сочетаний не найдено. Наблюдение, ' +
+            "контроль симптомов; при сохранении жалоб — повторный осмотр.</div>";
+  } else {
+    html += '<div class="muted" style="margin-bottom:8px">Подозрения (по убыванию соответствия):</div>';
+    for (const { d, p } of rows) {
+      html += '<div class="dis"><div class="dis-top"><h3>' + d.name +
+              '</h3><div class="score">' + p + '%</div></div>' +
+              '<div class="bar"><span style="width:' + p + '%"></span></div>' +
+              "<ul>" + d.tests.map((t) => "<li>" + t + "</li>").join("") + "</ul>" +
+              '<div style="margin-top:8px"><span class="tag">' + d.group + "</span>" +
+              '<span class="tag ref">' + d.referral + "</span></div>" +
+              (d.note ? '<div class="muted" style="margin-top:6px">' + d.note + "</div>" : "") +
+              "</div>";
+    }
+    // сводный план по топ-3
+    const plan = [];
+    for (const { d } of rows.slice(0, 3)) {
+      for (const t of d.tests) if (!plan.includes(t)) plan.push(t);
+    }
+    html += '<div class="plan"><h3 style="font-size:14.5px;color:#16324F;margin:6px 0 0">Сводный план обследования</h3>' +
+            "<ol>" + plan.map((t) => "<li>" + t + "</li>").join("") + "</ol>" +
+            '<div class="muted" style="margin-top:6px">Сначала — визуализация и морфологическая верификация, ' +
+            "затем стадирование и консилиум.</div></div>";
+  }
+
+  if (ctx.smoke >= 20) html += '<div class="muted" style="margin-top:10px">Учтено: курение ≥ 20 пачка-лет.</div>';
+  out.innerHTML = html;
+}
+
+/* ------------------------------ инициализация ------------------------------ */
+buildChips();
+
+// предустановка из ссылки: #s=cough,weight&age=62&smoke=30
+(function preset() {
+  const h = location.hash.replace(/^#/, "");
+  if (!h) return;
+  const p = new URLSearchParams(h);
+  (p.get("s") || "").split(",").filter(Boolean).forEach((id) => {
+    if (W.has(id)) state.add(id);
+  });
+  if (p.get("age")) $("#age").value = p.get("age");
+  if (p.get("sex")) $("#sex").value = p.get("sex");
+  if (p.get("smoke")) $("#smoke").value = p.get("smoke");
+  document.querySelectorAll(".chip").forEach((b) =>
+    b.setAttribute("aria-pressed", state.has(b.dataset.id) ? "true" : "false")
+  );
+})();
+
+$("#calc").addEventListener("click", render);
+$("#reset").addEventListener("click", () => {
+  state.clear();
+  document.querySelectorAll(".chip").forEach((b) => b.setAttribute("aria-pressed", "false"));
+  $("#age").value = ""; $("#sex").value = ""; $("#smoke").value = "";
+  render();
+});
+["age", "sex", "smoke"].forEach((id) =>
+  $("#" + id).addEventListener("change", () => { if (state.size) render(); })
+);
+if (state.size) render();
+</script>
+</body>
+</html>
